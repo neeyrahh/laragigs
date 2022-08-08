@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Models\Listing;
 
 /*
 |--------------------------------------------------------------------------
@@ -12,21 +13,17 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
+// all listings
 Route::get('/', function () {
     return view('listings',[
         'heading' => 'latest listings',
-        'listings' => [
-            [
-            'id' => 1,
-            'title'=>'Listing One',
-            'description'=>'being selfless, caring, compassionate, and unconditionally kind. Like love, it takes practice to understand and feel it. We share love with others through kind acts such as a smile, a nice word, an unexpected deed, or a planned surprise.'
-            ],
-            [
-                'id' => 2,
-                'title'=>'Listing Two',
-                'description'=>'being selfless, caring, compassionate, and unconditionally kind. Like love, it takes practice to understand and feel it. We share love with others through kind acts such as a smile, a nice word, an unexpected deed, or a planned surprise.'
-               ]
-        ]
+        'listings' => Listing::all()
+    ]);
+});
+
+//  single listing
+Route::get('/listings{$id}', function($id){
+    return view('listing',[
+        'listing' => Listing::find($id)
     ]);
 });
