@@ -27,36 +27,49 @@ class UserController extends Controller
             'password' => Hash::make($req->password),
         ]);
 
+        $token=$data->createToken('myapptoken')->plainTextToken;
+
         $response=[
         'data' => $data,
         'message' => 'Registered succesfully',
+        'token' => $token,
         'status' => 'success'
        ];
 
        return response($response, 200);
     }
+
+
      
     public function login(Request $req){
+
       $login=$req->validate([
         'email' => 'required',
         'password' => 'password'
       ]);
       
-      $user = User::where('email', $req->email)->where('password',$req->passsword)->first();
-      if($login != $user){
+      if(!Auth::attempt($login)){
         $response = [
-            'message' => 'Password or Email',
+            'message' => 'Password or Email not correct',
             'status' => 'error'
         ];
+
         return response($response, 400);
-      }else{
+      }
+
+        $data=User::where('email', $req->email)->first();
+
+        $token=$data->createToken('myapptoken')->plainTextToken;
+
         $response = [
-            'data' => $user,
+            'data' => $data,
+            'token' => $token,
             'message' => 'Login Successful',
             'status' => 'success'
         ];
+
         return response($response, 200);
-      }
+      
 
     }
 }

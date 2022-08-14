@@ -9,10 +9,35 @@ class ListingController extends Controller
 {
     //  show all listing
     public function index(){
+       
         return view('listings.index',[
        
-            'listings' => Listing::all()
+            'listings' => Listing::latest()->filter(request(['tag','search']))->get()
         ]);
+    }
+
+    
+
+    // Show Create Form
+    public function create() {
+        return view('listings.create');
+    }
+
+    //store listing data
+    public function store(Request $req){
+       $formFields=$req->validate([
+        'title'=>'required',
+        'company'=> 'required',
+        'location'=>'required',
+        'website'=>'required',
+        'email'=>'required',
+        'tags'=>'required',
+        'description'=>'required'
+       ]);
+
+       Listing::create($formFields);
+
+       return redirect('/')->with('message','Listing successfully created');
     }
 
     //  show single listing
@@ -21,4 +46,5 @@ class ListingController extends Controller
             'listing' => $listing
         ]);
     }
+   
 }
